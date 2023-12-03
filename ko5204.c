@@ -157,3 +157,8 @@ out:
 
 module_init(ko5204_init);
 module_exit(ko5204_exit);
+
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Tripp Spano");
+MODULE_DESCRIPTION("Kernel Module for /proc/5204 communication");
