@@ -4,33 +4,7 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 #include <linux/ktime.h>
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/kernel.h>
 #include <linux/mm.h>
-#include <linux/mmu_notifier.h>
-#include <linux/sched.h>
-#include <linux/slab.h>
-
-#include <asm/pgtable.h>
-#include <asm/uaccess.h>
-#include <asm/tlb.h>
-#include <asm/tlbflush.h>
-#include <asm/cacheflush.h>
-#include <asm/smp.h>
-
-#include <linux/fs.h>
-#include <linux/cdev.h>
-#include <linux/uaccess.h>
-#include <linux/list.h>
-#include <linux/kthread.h>
-#include <linux/delay.h>
-#include <linux/lightnvm.h>
-#include <linux/kvm.h>
-#include <linux/kvm_types.h>
-#include <asm/kvm_host.h>
-#include <linux/kvm_host.h>
-#include <linux/proc_fs.h>
 
 
 
