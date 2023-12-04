@@ -20,20 +20,21 @@ static struct proc_dir_entry *ent;
 
 static ssize_t mywrite(struct file *file, const char __user *ubuf, size_t count, loff_t *ppos) 
 {
-	int num,c,i,m;
-	char buf[BUFSIZE];
-	if(*ppos > 0 || count > BUFSIZE)
-		return -EFAULT;
-	if(copy_from_user(buf, ubuf, count))
-		return -EFAULT;
-	num = sscanf(buf,"%d %d",&i,&m);
-	if(num != 2)
-		return -EFAULT;
-	irq = i; 
-	mode = m;
-	c = strlen(buf);
-	*ppos = c;
-	return c;
+	// int num,c,i,m;
+	// char buf[BUFSIZE];
+	// if(*ppos > 0 || count > BUFSIZE)
+	// 	return -EFAULT;
+	// if(copy_from_user(buf, ubuf, count))
+	// 	return -EFAULT;
+	// num = sscanf(buf,"%d %d",&i,&m);
+	// if(num != 2)
+	// 	return -EFAULT;
+	// irq = i; 
+	// mode = m;
+	// c = strlen(buf);
+	// *ppos = c;
+	// return c;
+	return count;
 }
 
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
