@@ -36,7 +36,7 @@ static int __init ko5204_init(void) {
 
 static void __exit ko5204_exit(void) {
     if (proc_entry) {
-        remove_proc_entry(PROC_FILENAME, NULL);
+        remove_proc_entry("5204", NULL);
     }
     printk(KERN_INFO LOG_PREFIX "Module exited\n");
 }
