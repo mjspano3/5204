@@ -56,18 +56,18 @@ static const struct file_operations proc_fops = {
 };
 
 static int __init ko5204_init(void) {
-    message = kmalloc(PAGE_SIZE, GFP_KERNEL);
-    if (!message) {
-        return -ENOMEM;
-    }
-    memset(message, 0, PAGE_SIZE);
-    message_size = PAGE_SIZE;
+    // message = kmalloc(PAGE_SIZE, GFP_KERNEL);
+    // if (!message) {
+    //     return -ENOMEM;
+    // }
+    // memset(message, 0, PAGE_SIZE);
+    // message_size = PAGE_SIZE;
 
-    proc_entry = proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
-    if (!proc_entry) {
-        kfree(message);
-        return -ENOMEM;
-    }
+    // proc_entry = proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
+    // if (!proc_entry) {
+    //     kfree(message);
+    //     return -ENOMEM;
+    // }
 
     printk(KERN_INFO LOG_PREFIX "Module initialized\n");
     return 0;
