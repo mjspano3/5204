@@ -1,50 +1,39 @@
-#include <linux/init.h>
 #include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/kernel.h>   
 #include <linux/proc_fs.h>
-#include <linux/uaccess.h>
-#include <linux/slab.h>
-#include <linux/ktime.h>
-#include <linux/mm.h>
-
-
-
-#define PROC_FILENAME "5204"
-#define LOG_PREFIX "ko5204: "
-
-static struct proc_dir_entry *proc_entry;
-
-pte_t *va2pte(struct mm_struct *mm, unsigned long addr);
-
-static ssize_t proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos) {
-    return count;
-}
-
-static const struct file_operations proc_fops = {
-    .owner = THIS_MODULE,
-    .write = proc_write,
-};
-
-static int __init ko5204_init(void) {
-    proc_entry = proc_create("5204", 0660, NULL, &proc_fops);
-    if (!proc_entry) {
-        return -ENOMEM;
-    }
-
-    printk(KERN_INFO LOG_PREFIX "Module initialized\n");
-    return 0;
-}
-
-static void __exit ko5204_exit(void) {
-    if (proc_entry) {
-        remove_proc_entry("5204", NULL);
-    }
-    printk(KERN_INFO LOG_PREFIX "Module exited\n");
-}
-
-module_init(ko5204_init);
-module_exit(ko5204_exit);
+#include <asm/uaccess.h>
 
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Tripp Spano");
-MODULE_DESCRIPTION("Kernel Module for /proc/5204 communication");
+
+
+static struct proc_dir_entry *ent;
+
+static ssize_t mywrite(struct file *file, const char __user *ubuf, size_t count, loff_t *ppos) 
+{
+	return 0;
+}
+
+
+static struct file_operations myops = 
+{
+	.owner = THIS_MODULE,
+	.write = mywrite,
+};
+
+static int simple_init(void)
+{
+	ent=proc_create("5204",0660,NULL,&myops);
+	return 0;
+}
+
+static void simple_cleanup(void)
+{
+	proc_remove(ent);
+}
+
+module_init(simple_init);
+module_exit(simple_cleanup);
