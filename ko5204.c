@@ -17,52 +17,53 @@ static struct proc_dir_entry *proc_entry;
 pte_t *va2pte(struct mm_struct *mm, unsigned long addr);
 
 static ssize_t proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos) {
-    char *input;
-    unsigned long va = 0;
+    // char *input;
+    // unsigned long va = 0;
 
-    input = kmalloc(count + 1, GFP_KERNEL);
-    if (!input)
-        return -ENOMEM;
+    // input = kmalloc(count + 1, GFP_KERNEL);
+    // if (!input)
+    //     return -ENOMEM;
 
-    if (copy_from_user(input, buffer, count)) {
-        kfree(input);
-        return -EFAULT;
-    }
+    // if (copy_from_user(input, buffer, count)) {
+    //     kfree(input);
+    //     return -EFAULT;
+    // }
 
-    input[count] = '\0';
+    // input[count] = '\0';
 
-    if (kstrtoul(input, 0, &va) != 0) {
-        kfree(input);
-        return -EINVAL;
-    }
+    // if (kstrtoul(input, 0, &va) != 0) {
+    //     kfree(input);
+    //     return -EINVAL;
+    // }
 
-    // Perform translation and measure latency
-    ktime_t start_time = ktime_get();
-    // Perform translation logic here with the provided virtual address 'va'
+    // // Perform translation and measure latency
+    // ktime_t start_time = ktime_get();
+    // // Perform translation logic here with the provided virtual address 'va'
 
-    pte_t *ptep = va2pte(current->mm, va);
-    unsigned long paddr = 0;
-    unsigned long page_addr = 0;
-    unsigned long page_offset = 0;
-    page_addr = pte_val(*ptep) & PAGE_MASK;
-    page_offset = va & ~PAGE_MASK;
-    paddr = page_addr | page_offset;
+    // pte_t *ptep = va2pte(current->mm, va);
+    // unsigned long paddr = 0;
+    // unsigned long page_addr = 0;
+    // unsigned long page_offset = 0;
+    // page_addr = pte_val(*ptep) & PAGE_MASK;
+    // page_offset = va & ~PAGE_MASK;
+    // paddr = page_addr | page_offset;
 
-    ktime_t end_time = ktime_get();
-    ktime_t latency = ktime_sub(end_time, start_time);
+    // ktime_t end_time = ktime_get();
+    // ktime_t latency = ktime_sub(end_time, start_time);
 
-    // Log latency to kernel log
-    printk(KERN_INFO LOG_PREFIX "Translation latency for VA 0x%lx: %lld ns\n", va, latency);
-    kfree(input);
+    // // Log latency to kernel log
+    // printk(KERN_INFO LOG_PREFIX "Translation latency for VA 0x%lx: %lld ns\n", va, latency);
+    // kfree(input);
     return count;
 }
 
 static const struct file_operations proc_fops = {
     .write = proc_write,
+    .owner = THIS_MODULE,
 };
 
 static int __init ko5204_init(void) {
-    proc_entry = proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
+    proc_entry = proc_create(PROC_FILENAME, 0, NULL, &proc_fops);
     if (!proc_entry) {
         return -ENOMEM;
     }
