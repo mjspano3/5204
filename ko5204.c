@@ -25,7 +25,7 @@ static const struct file_operations proc_fops = {
 };
 
 static int __init ko5204_init(void) {
-    proc_entry = proc_create(PROC_FILENAME, 0660, NULL, &proc_fops);
+    proc_entry = proc_create("5204", 0660, NULL, &proc_fops);
     if (!proc_entry) {
         return -ENOMEM;
     }
