@@ -31,7 +31,7 @@ static ssize_t proc_write(struct file *file, const char __user *buffer, size_t c
 
     input[count] = '\0';
 
-    if (kstrtoul(input, 0, &temp_va) != 0) {
+    if (kstrtoul(input, 0, &va) != 0) {
         kfree(input);
         return -EINVAL;
     }
@@ -64,7 +64,6 @@ static const struct file_operations proc_fops = {
 static int __init ko5204_init(void) {
     proc_entry = proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
     if (!proc_entry) {
-        kfree(message);
         return -ENOMEM;
     }
 
