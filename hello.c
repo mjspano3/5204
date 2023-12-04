@@ -34,6 +34,10 @@ static ssize_t mywrite(struct file *file, const char __user *ubuf, size_t count,
 	// c = strlen(buf);
 	// *ppos = c;
 	// return c;
+
+
+
+	
 	return count;
 }
 
