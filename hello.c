@@ -20,6 +20,7 @@ static struct proc_dir_entry *ent;
 
 static ssize_t mywrite(struct file *file, const char __user *ubuf, size_t count, loff_t *ppos) 
 {
+	
 	// int num,c,i,m;
 	// char buf[BUFSIZE];
 	// if(*ppos > 0 || count > BUFSIZE)
