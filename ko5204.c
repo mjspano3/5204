@@ -12,22 +12,28 @@
 #define LOG_PREFIX "ko5204: "
 
 static struct proc_dir_entry *proc_entry;
-static char *message;
-static size_t message_size;
-static DEFINE_MUTEX(proc_mutex);
+// static DEFINE_MUTEX(proc_mutex);
 
 pte_t *va2pte(struct mm_struct *mm, unsigned long addr);
 
 static ssize_t proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos) {
-    unsigned long va;
-    int ret;
+    char *input;
+    unsigned long va = 0;
 
-    if (count >= sizeof(unsigned long)) {
-        return -EINVAL;
+    input = kmalloc(count + 1, GFP_KERNEL);
+    if (!input)
+        return -ENOMEM;
+
+    if (copy_from_user(input, buffer, count)) {
+        kfree(input);
+        return -EFAULT;
     }
 
-    if (copy_from_user(&va, buffer, sizeof(unsigned long))) {
-        return -EFAULT;
+    input[count] = '\0';
+
+    if (kstrtoul(input, 0, &temp_va) != 0) {
+        kfree(input);
+        return -EINVAL;
     }
 
     // Perform translation and measure latency
@@ -47,7 +53,7 @@ static ssize_t proc_write(struct file *file, const char __user *buffer, size_t c
 
     // Log latency to kernel log
     printk(KERN_INFO LOG_PREFIX "Translation latency for VA 0x%lx: %lld ns\n", va, latency);
-
+    kfree(input);
     return count;
 }
 
@@ -56,18 +62,11 @@ static const struct file_operations proc_fops = {
 };
 
 static int __init ko5204_init(void) {
-    message = kmalloc(PAGE_SIZE, GFP_KERNEL);
-    if (!message) {
+    proc_entry = proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
+    if (!proc_entry) {
+        kfree(message);
         return -ENOMEM;
     }
-    memset(message, 0, PAGE_SIZE);
-    message_size = PAGE_SIZE;
-
-    proc_entry = proc_create(PROC_FILENAME, 0666, NULL, &proc_fops);
-    // if (!proc_entry) {
-    //     kfree(message);
-    //     return -ENOMEM;
-    // }
 
     printk(KERN_INFO LOG_PREFIX "Module initialized\n");
     return 0;
@@ -76,9 +75,6 @@ static int __init ko5204_init(void) {
 static void __exit ko5204_exit(void) {
     if (proc_entry) {
         remove_proc_entry(PROC_FILENAME, NULL);
-    }
-    if (message) {
-        kfree(message);
     }
     printk(KERN_INFO LOG_PREFIX "Module exited\n");
 }
