@@ -22,7 +22,7 @@ int main(){
         *((char*)ptr + i * CHUNK_SIZE) = i;
     }
 
-    printf("buffer offset: %p", ptr);
+    printf("buffer offset: %p\n", ptr);
 
     char command[128];
     sprintf(command, "sudo bash  -c 'echo %p > /proc/cs5204'", (char*)ptr);
