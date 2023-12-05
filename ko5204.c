@@ -37,8 +37,8 @@ static ssize_t proc_write(struct file *file, const char __user *buffer, size_t c
     }
 
     //debugging
-    printk(KERN_ALERT "input: %s\n", input);
-    printk(KERN_ALERT "ul va from input: %lu\n", va);
+    // printk(KERN_ALERT "input: %s\n", input);
+    // printk(KERN_ALERT "ul va from input: %lu\n", va);
 
     // Perform translation and measure latency
     ktime_t start_time = ktime_get();
@@ -92,36 +92,36 @@ pte_t *va2pte(struct mm_struct *mm, unsigned long addr)
     pte_t *ptep;
 
     pgd = pgd_offset(mm, addr);
-    if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd))) {
-        printk("Coperd,invalid pgd [%p]\n", pgd);
-        goto out;
-    }
+    // if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd))) {
+    //     printk("Coperd,invalid pgd [%p]\n", pgd);
+    //     goto out;
+    // }
 
     p4d = p4d_offset(pgd, addr);
-    if (p4d_none(*p4d) || unlikely(p4d_bad(*p4d))) {
-        printk("Coperd, invalid p4d [%p]", p4d);
-        goto out;
-    }
+    // if (p4d_none(*p4d) || unlikely(p4d_bad(*p4d))) {
+    //     printk("Coperd, invalid p4d [%p]", p4d);
+    //     goto out;
+    // }
 
     pud = pud_offset(p4d, addr);
-    if (pud_none(*pud) || unlikely(pud_bad(*pud))) {
-        printk("Coperd, invalid pud [%p]", pud);
-        goto out;
-    }
+    // if (pud_none(*pud) || unlikely(pud_bad(*pud))) {
+    //     printk("Coperd, invalid pud [%p]", pud);
+    //     goto out;
+    // }
 
     pmd = pmd_offset(pud, addr);
     /* Coperd: TODO: sometimes pmd_bad() is true */
-    if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd))) {
-        printk("Coperd, invalid pmd [%p]", pmd);
-        goto out;
-    }
+    // if (pmd_none(*pmd) || unlikely(pmd_bad(*pmd))) {
+    //     printk("Coperd, invalid pmd [%p]", pmd);
+    //     goto out;
+    // }
 
     ptep = pte_offset_map(pmd, addr);
     //ptep = pte_offset_map_lock(mm, pmd, addr, &ptl);
-    if (!ptep) {
-        printk("Coperd,%d,pt_offset_map() failed\n", __LINE__);
-        goto out;
-    }
+    // if (!ptep) {
+    //     printk("Coperd,%d,pt_offset_map() failed\n", __LINE__);
+    //     goto out;
+    // }
 
     return ptep;
 
