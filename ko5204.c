@@ -30,10 +30,15 @@ static ssize_t proc_write(struct file *file, const char __user *buffer, size_t c
 
     input[count] = '\0';
 
+    
     if (kstrtoul(input, 0, &va) != 0) {
         kfree(input);
         return -EINVAL;
     }
+
+    //debugging
+    printk(KERN_ALERT "input: %s\n", input);
+    printk(KERN_ALERT "ul va from input: %lu\n", va);
 
     // Perform translation and measure latency
     ktime_t start_time = ktime_get();
