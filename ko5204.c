@@ -83,10 +83,10 @@ static int monitor_function(void *data) {
         unsigned long total_accesses = 0;
 
         // Scan and aggregate access counts for all 4KB pages in the buffer
-        for (i = 0; i < BUFFER_SIZE / PAGE_SIZE; ++i) {
+        for (i = 0; i < BUFFER_SIZE / PAGE_SIZE -1; ++i) {
 
             //debugging
-            printk(KERN_ALERT "looking at: %p\n", (void *)(buffer_offset + i * PAGE_SIZE));
+            //printk(KERN_ALERT "looking at: %p\n", (void *)(buffer_offset + i * PAGE_SIZE));
             struct page *page = virt_to_page((void *)(buffer_offset + i * PAGE_SIZE));
             if (PageAnon(page) || PageSwapCache(page)) continue;  // Skip anonymous and swap pages
 
@@ -98,7 +98,7 @@ static int monitor_function(void *data) {
         // Log access frequency statistics for all 4KB pages every 1 second
         if (time_after(jiffies, end_time - HZ)) {
             printk(KERN_INFO "Access frequency statistics for 4KB pages:\n");
-            for (i = 0; i < BUFFER_SIZE / PAGE_SIZE; ++i) {
+            for (i = 0; i < BUFFER_SIZE / PAGE_SIZE -1; ++i) {
                 if (access_counts[i] > 0) {
                     printk(KERN_INFO "Page %d: Accessed %lu times\n", i, access_counts[i]);
                     access_counts[i] = 0;  // Reset the access count for the next interval
