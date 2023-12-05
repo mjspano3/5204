@@ -10,8 +10,8 @@ int main(){
 
     void* ptr = malloc(GB_SIZE);
 
-    // size_t total = GB_SIZE/CHUNK_SIZE;
-    // size_t i;
+    size_t total = GB_SIZE/CHUNK_SIZE;
+    size_t i;
 
     for(i = 0; i < total; i++){
         //function
