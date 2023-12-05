@@ -5,7 +5,9 @@
 #include <linux/slab.h>
 #include <linux/ktime.h>
 #include <linux/mm.h>
-
+#include <linux/delay.h>
+#include <linux/kthread.h>
+#include <linux/sched.h>
 
 #define PROC_FILENAME "cs5204"
 #define LOG_PREFIX "ko5204: "
@@ -20,6 +22,7 @@ static struct proc_dir_entry *proc_entry;
 // static DEFINE_MUTEX(proc_mutex);
 
 pte_t *va2pte(struct mm_struct *mm, unsigned long addr);
+static int monitor_function(void *data);
 
 static ssize_t proc_write(struct file *file, const char __user *buffer, size_t count, loff_t *ppos) {
     char *input;
