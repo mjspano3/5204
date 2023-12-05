@@ -10,6 +10,12 @@
 #define PROC_FILENAME "cs5204"
 #define LOG_PREFIX "ko5204: "
 
+static struct task_struct *monitor_thread;
+static unsigned long *access_counts;
+#define BUFFER_SIZE (1 * 1024 * 1024 * 1024)  // 1GB buffer size
+#define PAGE_SIZE 4096  // 4KB page size
+static void* buffer_offset;
+
 static struct proc_dir_entry *proc_entry;
 // static DEFINE_MUTEX(proc_mutex);
 
@@ -28,8 +34,13 @@ static ssize_t proc_write(struct file *file, const char __user *buffer, size_t c
         return -EFAULT;
     }
 
-    input[count] = '\0';
 
+
+    input[count] = '\0';
+    buffer_offset = input;
+
+    //time to start kernel thread since the buffer is allocated
+    monitor_thread = kthread_run(monitor_function, NULL, "monitor_thread");
     
     if (kstrtoul(input, 0, &va) != 0) {
         kfree(input);
@@ -61,6 +72,41 @@ static ssize_t proc_write(struct file *file, const char __user *buffer, size_t c
     return count;
 }
 
+static int monitor_function(void *data) {
+    unsigned long end_time = jiffies + HZ; // Run the loop for 1 second (HZ represents one second)
+
+    while (time_before(jiffies, end_time)) {
+        int i;
+        unsigned long total_accesses = 0;
+
+        // Scan and aggregate access counts for all 4KB pages in the buffer
+        for (i = 0; i < BUFFER_SIZE / PAGE_SIZE; ++i) {
+            struct page *page = virt_to_page((void *)(buffer_offset + i * PAGE_SIZE));
+            if (PageAnon(page) || PageSwapCache(page)) continue;  // Skip anonymous and swap pages
+
+            unsigned long access_bit = page->_mapcount.counter;
+            total_accesses += access_bit;
+            access_counts[i] += access_bit;
+        }
+
+        // Log access frequency statistics for all 4KB pages every 1 second
+        if (time_after(jiffies, end_time - HZ)) {
+            printk(KERN_INFO "Access frequency statistics for 4KB pages:\n");
+            for (i = 0; i < BUFFER_SIZE / PAGE_SIZE; ++i) {
+                if (access_counts[i] > 0) {
+                    printk(KERN_INFO "Page %d: Accessed %lu times\n", i, access_counts[i]);
+                    access_counts[i] = 0;  // Reset the access count for the next interval
+                }
+            }
+            printk(KERN_INFO "Total accesses during last interval: %lu\n", total_accesses);
+        }
+
+        msleep(100); // Sleep for 100ms
+    }
+
+    return 0;
+}
+
 static const struct file_operations proc_fops = {
     .owner = THIS_MODULE,
     .write = proc_write,
@@ -72,6 +118,18 @@ static int __init ko5204_init(void) {
         return -ENOMEM;
     }
 
+    int i;
+
+    access_counts = (unsigned long *)kmalloc((BUFFER_SIZE / PAGE_SIZE) * sizeof(unsigned long), GFP_KERNEL);
+    if (!access_counts) {
+        printk(KERN_ERR "Failed to allocate memory\n");
+        return -ENOMEM;
+    }
+
+    for (i = 0; i < BUFFER_SIZE / PAGE_SIZE; ++i) {
+        access_counts[i] = 0; // Initialize access counts for each page
+    }
+
     printk(KERN_INFO LOG_PREFIX "Module initialized\n");
     return 0;
 }
@@ -79,6 +137,12 @@ static int __init ko5204_init(void) {
 static void __exit ko5204_exit(void) {
     if (proc_entry) {
         remove_proc_entry(PROC_FILENAME, NULL);
+    }
+    if (monitor_thread) {
+        kthread_stop(monitor_thread);
+    }
+    if (access_counts) {
+        kfree(access_counts);
     }
     printk(KERN_INFO LOG_PREFIX "Module exited\n");
 }
