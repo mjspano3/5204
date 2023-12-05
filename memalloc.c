@@ -16,7 +16,7 @@ int main(){
     for(i = 0; i < total; i++){
         //function
         char command[128];
-        sprintf(command, "echo %p > /proc/cs5204", (char*)ptr + i * CHUNK_SIZE);
+        sprintf(command, "sudo bash  -c 'echo %p > /proc/cs5204'", (char*)ptr + i * CHUNK_SIZE);
         system(command);
         
     }
