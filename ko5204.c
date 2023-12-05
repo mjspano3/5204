@@ -91,7 +91,10 @@ static int monitor_function(void *data) {
             if (PageAnon(page) || PageSwapCache(page)) {
                 printk(KERN_ALERT "Skipping page\n");
                 continue;  // Skip anonymous and swap pages
+            } else {
+                printk(KERN_ALERT "NOT Skipping page\n");
             }
+                
 
             unsigned long access_bit = page->_mapcount.counter;
             total_accesses += access_bit;
