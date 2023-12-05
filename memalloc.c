@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
+#include <time.h>
 
 
 #define GB_SIZE 1073741824
@@ -16,7 +18,7 @@ void* fast_write(void* args){
     
     while (1) {
         size_t i;
-        size_t num_pages = MEM_SIZE_256MB / PAGE_SIZE;
+        size_t num_pages = MEM_SIZE_256MB / CHUNK_SIZE;
 
         for (i = 0; i < num_pages; ++i) {
             base_ptr[i * PAGE_SIZE] = 0xFF; // Perform a write operation to the page
@@ -36,7 +38,7 @@ void* slow_write(void* args){
     
     while (1) {
         size_t i;
-        size_t num_pages = MEM_SIZE_256MB / PAGE_SIZE;
+        size_t num_pages = MEM_SIZE_256MB / CHUNK_SIZE;
 
         for (i = 0; i < num_pages; ++i) {
             base_ptr[i * PAGE_SIZE + MEM_SIZE_256MB] = 0xFF; // Perform a write operation to the page
