@@ -88,7 +88,10 @@ static int monitor_function(void *data) {
             //debugging
             //printk(KERN_ALERT "looking at: %p\n", (void *)(buffer_offset + i * PAGE_SIZE));
             struct page *page = virt_to_page((void *)(buffer_offset + i * PAGE_SIZE));
-            if (PageAnon(page) || PageSwapCache(page)) continue;  // Skip anonymous and swap pages
+            if (PageAnon(page) || PageSwapCache(page)) {
+                printk(KERN_ALERT "Skipping page\n");
+                continue;  // Skip anonymous and swap pages
+            }
 
             unsigned long access_bit = page->_mapcount.counter;
             total_accesses += access_bit;
@@ -97,9 +100,11 @@ static int monitor_function(void *data) {
 
         // Log access frequency statistics for all 4KB pages every 1 second
         if (time_after(jiffies, end_time - HZ)) {
+            printk(KERN_ALERT "We are logging frequency statistics\n");
             printk(KERN_INFO "Access frequency statistics for 4KB pages:\n");
             for (i = 0; i < BUFFER_SIZE / PAGE_SIZE -1; ++i) {
                 if (access_counts[i] > 0) {
+                    printk(KERN_ALERT  "Page %d: Accessed %lu times\n", i, access_counts[i]);
                     printk(KERN_INFO "Page %d: Accessed %lu times\n", i, access_counts[i]);
                     access_counts[i] = 0;  // Reset the access count for the next interval
                 }
