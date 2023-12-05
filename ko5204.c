@@ -84,6 +84,9 @@ static int monitor_function(void *data) {
 
         // Scan and aggregate access counts for all 4KB pages in the buffer
         for (i = 0; i < BUFFER_SIZE / PAGE_SIZE; ++i) {
+
+            //debugging
+            printk(KERN_ALERT "looking at: %p\n", (void *)(buffer_offset + i * PAGE_SIZE));
             struct page *page = virt_to_page((void *)(buffer_offset + i * PAGE_SIZE));
             if (PageAnon(page) || PageSwapCache(page)) continue;  // Skip anonymous and swap pages
 
