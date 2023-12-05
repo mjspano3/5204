@@ -130,4 +130,4 @@ module_exit(ko5204_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Tripp Spano");
-MODULE_DESCRIPTION("Kernel Module for /proc/5204 communication");
+MODULE_DESCRIPTION("Kernel Module for /proc/cs5204 communication");
