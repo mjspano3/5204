@@ -13,13 +13,14 @@ int main(){
     // size_t total = GB_SIZE/CHUNK_SIZE;
     // size_t i;
 
-    // for(i = 0; i < total; i++){
-    //     //function
-    //     char command[128];
-    //     sprintf(command, "sudo bash  -c 'echo %p > /proc/cs5204'", (char*)ptr + i * CHUNK_SIZE);
-    //     system(command);
+    for(i = 0; i < total; i++){
+        //function
+        // char command[128];
+        // sprintf(command, "sudo bash  -c 'echo %p > /proc/cs5204'", (char*)ptr + i * CHUNK_SIZE);
+        // system(command);
         
-    // }
+        *((char*)ptr + i * CHUNK_SIZE) = i;
+    }
 
         char command[128];
         sprintf(command, "sudo bash  -c 'echo %p > /proc/cs5204'", (char*)ptr);
