@@ -29,7 +29,7 @@ bs=1M
 
 [read-steady]
 stonewall
-description=Random write steady state phase
+description=Sequential read steady state phase
 rw=read
 bs=4K
 write_bw_log=logs/sequential_read
