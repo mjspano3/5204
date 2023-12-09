@@ -27,9 +27,9 @@ description=Sequential fill phase
 rw=write
 bs=1M
 
-[random-write-steady]
+[write-steady]
 stonewall
-description=Random write steady state phase
+description=Sequential write steady state phase
 rw=write
 bs=4K
 write_bw_log=logs/sequential_write
