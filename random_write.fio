@@ -23,7 +23,7 @@ log_avg_msec=1000
 bwavgtime=1000
 
 [sequential-fill]
-description=Sequential fill phase
+description=Random fill on empty ssd
 rw=randwrite
 bs=4K
 write_bw_log=logs/random_write
