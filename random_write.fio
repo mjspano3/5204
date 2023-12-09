@@ -22,7 +22,7 @@ filename=/dev/nvme0n1
 log_avg_msec=1000
 bwavgtime=1000
 
-[sequential-fill]
+[random-fill]
 description=Random fill on empty ssd
 rw=randwrite
 bs=4K
