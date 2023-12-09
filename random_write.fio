@@ -32,5 +32,5 @@ stonewall
 description=Random write steady state phase
 rw=randwrite
 bs=4K
-write_bw_log=/logs/random_write
-write_lat_log=/logs/random_write
+write_bw_log=logs/random_write
+write_lat_log=logs/random_write
