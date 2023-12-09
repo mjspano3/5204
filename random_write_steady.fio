@@ -15,7 +15,7 @@
 # whatever data you have on there will be gone.
 #
 [global]
-ioengine=psync
+ioengine=libaio
 direct=1
 group_reporting
 filename=/dev/nvme0n1
@@ -25,6 +25,7 @@ bwavgtime=1000
 [sequential-fill]
 description=Sequential fill phase
 rw=write
+iodepth=16
 bs=1M
 
 [random-write-steady]
@@ -32,5 +33,6 @@ stonewall
 description=Random write steady state phase
 rw=randwrite
 bs=4K
+iodepth=32
 write_bw_log=logs/random_write_steady
 write_lat_log=logs/random_write_steady
