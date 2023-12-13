@@ -30,7 +30,7 @@ bs=1M
 [write-steady]
 stonewall
 description=Sequential write steady state phase
-timebased
+time_based
 runtime=300
 rw=write
 bs=4K
