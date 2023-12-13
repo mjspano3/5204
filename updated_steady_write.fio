@@ -18,7 +18,6 @@
 [global]
 ioengine=psync
 direct=1
-numjobs=4
 group_reporting
 filename=/dev/nvme0n1
 log_avg_msec=1000
@@ -28,8 +27,8 @@ bwavgtime=1000
 stonewall
 description=Sequential write steady state phase
 time_based
-runtime=600
+runtime=300
 rw=write
-bs=4K
+bs=64K
 write_bw_log=logs/sequential_write_steady
 write_lat_log=logs/sequential_write_steady
